@@ -132,10 +132,11 @@ function RoutineCard({ item }: { item: Routine }) {
 // ─── 하단 네비게이션 ───────────────────────────────────────────
 function BottomNav({ active }: { active: string }) {
   const tabs = [
-    { key: 'home', label: '홈', icon: '⌂' },
-    { key: 'do', label: 'Do', icon: '◷' },
-    { key: 'vlog', label: '브이로그', icon: '▭' },
-    { key: 'me', label: '나', icon: '♡' },
+    { key: 'plan', label: 'Plan', icon: '☰' },
+    { key: 'do', label: 'Do', icon: '◎' },
+    { key: 'see', label: 'See', icon: '◈' },
+    { key: 'vlog', label: 'Vlog', icon: '▶' },
+    { key: 'archive', label: 'Archive', icon: '◻' },
   ];
 
   return (
@@ -144,12 +145,8 @@ function BottomNav({ active }: { active: string }) {
         const isActive = tab.key === active;
         return (
           <TouchableOpacity key={tab.key} style={styles.navTab} activeOpacity={0.7}>
-            <Text style={[styles.navIcon, isActive && styles.navIconActive]}>
-              {tab.icon}
-            </Text>
-            <Text style={[styles.navLabel, isActive && styles.navLabelActive]}>
-              {tab.label}
-            </Text>
+            <Text style={[styles.navIcon, isActive && styles.navIconActive]}>{tab.icon}</Text>
+            <Text style={[styles.navLabel, isActive && styles.navLabelActive]}>{tab.label}</Text>
           </TouchableOpacity>
         );
       })}
@@ -454,7 +451,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   navIcon: {
-    fontSize: 22,
+    fontSize: 18,
     color: C.textMuted,
   },
   navIconActive: {
@@ -462,7 +459,7 @@ const styles = StyleSheet.create({
   },
   navLabel: {
     fontFamily: F.medium,
-    fontSize: 10,
+    fontSize: 9,
     color: C.textMuted,
     marginTop: 3,
   },
