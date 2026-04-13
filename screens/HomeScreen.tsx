@@ -14,17 +14,18 @@ const C = {
   bg: '#0D1117',
   yellow: '#F5C842',
   text: '#F0EDE6',
-  textMuted: '#8B8985',
+  textMuted: '#6B7280',
   card: '#161B22',
+  cardActive: '#1A1F28',
+  cardUpcoming: '#13181F',
   border: '#21262D',
+  borderActive: '#F5C842',
   done: '#3FB950',
-  active: '#F5C842',
-  upcoming: '#30363D',
 };
 
 // ─── 폰트 ─────────────────────────────────────────────────────
 const F = {
-  display: 'YesevaOne_400Regular',   // 로고
+  display: 'YesevaOne_400Regular',
   regular: 'DMSans_400Regular',
   medium: 'DMSans_500Medium',
   bold: 'DMSans_700Bold',
@@ -37,96 +38,92 @@ interface Routine {
   id: string;
   time: string;
   title: string;
-  duration: string;
+  subtitle: string;
   status: Status;
 }
 
 // ─── 더미 데이터 ───────────────────────────────────────────────
 const TODAY_ROUTINES: Routine[] = [
-  { id: '1', time: '06:00', title: '기상 & 스트레칭', duration: '15분', status: 'done' },
-  { id: '2', time: '06:30', title: '모닝 저널링', duration: '20분', status: 'done' },
-  { id: '3', time: '07:00', title: '영어 인풋 듣기', duration: '30분', status: 'active' },
-  { id: '4', time: '08:00', title: '심층 학습 블록', duration: '90분', status: 'upcoming' },
-  { id: '5', time: '10:00', title: '운동', duration: '60분', status: 'upcoming' },
-  { id: '6', time: '14:00', title: '리뷰 & 회고', duration: '30분', status: 'upcoming' },
+  {
+    id: '1',
+    time: '08:00',
+    title: '모닝 루틴',
+    subtitle: '기본 루틴 · 기상, 스트레칭, 물 마시기',
+    status: 'done',
+  },
+  {
+    id: '2',
+    time: '09:00',
+    title: '영어 독해',
+    subtitle: '활동 루틴 · 지문 3개 풀기',
+    status: 'done',
+  },
+  {
+    id: '3',
+    time: '10:00',
+    title: '수학 미적분',
+    subtitle: '활동 루틴 · 문제 10개 풀기',
+    status: 'active',
+  },
+  {
+    id: '4',
+    time: '11:00',
+    title: '국어 비문학',
+    subtitle: '활동 루틴 · 지문 분석',
+    status: 'upcoming',
+  },
 ];
 
 // ─── 유틸 ──────────────────────────────────────────────────────
 function getKoreanDate(): string {
-  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   const now = new Date();
-  const y = now.getFullYear();
   const m = now.getMonth() + 1;
   const d = now.getDate();
   const day = days[now.getDay()];
-  return `${y}년 ${m}월 ${d}일 ${day}요일`;
+  return `${day}, ${m}월 ${d}일`;
 }
 
-function getStatusLabel(status: Status): string {
-  return status === 'done' ? '완료' : status === 'active' ? '진행 중' : '예정';
-}
-
-// ─── 루틴 아이템 ───────────────────────────────────────────────
-function RoutineItem({ item }: { item: Routine }) {
-  const isActive = item.status === 'active';
+// ─── 루틴 카드 ────────────────────────────────────────────────
+function RoutineCard({ item }: { item: Routine }) {
   const isDone = item.status === 'done';
+  const isActive = item.status === 'active';
 
   return (
-    <View style={[styles.routineItem, isActive && styles.routineItemActive]}>
-      {/* 왼쪽 타임라인 */}
-      <View style={styles.timelineCol}>
-        <Text style={[styles.routineTime, isDone && styles.routineTimeDone]}>
+    <View
+      style={[
+        styles.card,
+        isDone && styles.cardDone,
+        isActive && styles.cardActive,
+        !isDone && !isActive && styles.cardUpcoming,
+      ]}
+    >
+      {/* 왼쪽: 시간 + 텍스트 */}
+      <View style={styles.cardLeft}>
+        <Text style={[styles.cardTime, isActive && styles.cardTimeActive, isDone && styles.cardTimeDone]}>
           {item.time}
         </Text>
-        <View style={[styles.timelineLine, isDone && styles.timelineLineDone]} />
+        <Text style={[styles.cardTitle, isDone && styles.cardTitleDone, isActive && styles.cardTitleActive]}>
+          {item.title}
+        </Text>
+        <Text style={[styles.cardSubtitle, isDone && styles.cardSubtitleDone]}>
+          {item.subtitle}
+        </Text>
       </View>
 
-      {/* 상태 아이콘 */}
-      <View style={styles.statusCol}>
+      {/* 오른쪽: 상태 아이콘 */}
+      <View style={styles.cardRight}>
         {isDone ? (
-          <View style={styles.statusDone}>
-            <Text style={styles.statusDoneIcon}>✓</Text>
+          <View style={styles.iconDone}>
+            <Text style={styles.iconDoneText}>✓</Text>
           </View>
         ) : isActive ? (
-          <View style={styles.statusActive}>
-            <View style={styles.statusActiveDot} />
+          <View style={styles.iconActive}>
+            <View style={styles.iconActiveDot} />
           </View>
         ) : (
-          <View style={styles.statusUpcoming} />
+          <View style={styles.iconUpcoming} />
         )}
-      </View>
-
-      {/* 컨텐츠 */}
-      <View style={styles.routineContent}>
-        <View style={styles.routineHeader}>
-          <Text
-            style={[
-              styles.routineTitle,
-              isDone && styles.routineTitleDone,
-              isActive && styles.routineTitleActive,
-            ]}
-          >
-            {item.title}
-          </Text>
-          <View
-            style={[
-              styles.statusBadge,
-              isDone && styles.statusBadgeDone,
-              isActive && styles.statusBadgeActive,
-            ]}
-          >
-            <Text
-              style={[
-                styles.statusBadgeText,
-                isDone && styles.statusBadgeTextDone,
-                isActive && styles.statusBadgeTextActive,
-              ]}
-            >
-              {getStatusLabel(item.status)}
-            </Text>
-          </View>
-        </View>
-        <Text style={styles.routineDuration}>{item.duration}</Text>
       </View>
     </View>
   );
@@ -136,9 +133,9 @@ function RoutineItem({ item }: { item: Routine }) {
 function BottomNav({ active }: { active: string }) {
   const tabs = [
     { key: 'home', label: '홈', icon: '⌂' },
-    { key: 'do', label: 'Do', icon: '◎' },
-    { key: 'vlog', label: '브이로그', icon: '▶' },
-    { key: 'me', label: '나', icon: '◉' },
+    { key: 'do', label: 'Do', icon: '◷' },
+    { key: 'vlog', label: '브이로그', icon: '▭' },
+    { key: 'me', label: '나', icon: '♡' },
   ];
 
   return (
@@ -162,49 +159,38 @@ function BottomNav({ active }: { active: string }) {
 
 // ─── 메인 화면 ─────────────────────────────────────────────────
 export default function HomeScreen() {
-  const doneCount = TODAY_ROUTINES.filter((r) => r.status === 'done').length;
-  const totalCount = TODAY_ROUTINES.length;
-  const progress = Math.round((doneCount / totalCount) * 100);
-
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
 
       {/* ── 상단 헤더 ─────────────────────────────────────── */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.logoText}>Noa Archive</Text>
+        {/* 로고 */}
+        <Text style={styles.logo}>
+          <Text style={styles.logoNoa}>Noa</Text>
+          <Text style={styles.logoArchive}>Archive</Text>
+        </Text>
+
+        {/* 날짜 + 스트릭 */}
+        <View style={styles.headerBottom}>
           <Text style={styles.dateText}>{getKoreanDate()}</Text>
-        </View>
-        <View style={styles.streakBadge}>
-          <Text style={styles.streakFire}>🔥</Text>
-          <Text style={styles.streakCount}>12</Text>
-          <Text style={styles.streakUnit}>일</Text>
-        </View>
-      </View>
-
-      {/* ── 진행률 바 ─────────────────────────────────────── */}
-      <View style={styles.progressSection}>
-        <View style={styles.progressHeader}>
-          <Text style={styles.progressLabel}>오늘의 Plan</Text>
-          <Text style={styles.progressCount}>
-            <Text style={styles.progressDone}>{doneCount}</Text>
-            <Text style={styles.progressMuted}> / {totalCount} 완료</Text>
-          </Text>
-        </View>
-        <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${progress}%` }]} />
+          <View style={styles.streakBadge}>
+            <View style={styles.streakDot} />
+            <Text style={styles.streakText}>12일째</Text>
+          </View>
         </View>
       </View>
 
-      {/* ── 루틴 목록 ─────────────────────────────────────── */}
+      {/* ── 오늘의 PLAN ───────────────────────────────────── */}
+      <Text style={styles.sectionLabel}>오늘의 PLAN</Text>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {TODAY_ROUTINES.map((item) => (
-          <RoutineItem key={item.id} item={item} />
+          <RoutineCard key={item.id} item={item} />
         ))}
         <View style={styles.scrollPad} />
       </ScrollView>
@@ -212,8 +198,13 @@ export default function HomeScreen() {
       {/* ── Do 기록하기 버튼 ───────────────────────────────── */}
       <View style={styles.ctaSection}>
         <TouchableOpacity style={styles.ctaButton} activeOpacity={0.85}>
-          <Text style={styles.ctaIcon}>◎</Text>
-          <Text style={styles.ctaText}>Do 기록하기</Text>
+          <View style={styles.ctaLeft}>
+            <Text style={styles.ctaLabel}>지금 시간</Text>
+            <Text style={styles.ctaText}>Do 기록하기</Text>
+          </View>
+          <View style={styles.ctaArrow}>
+            <Text style={styles.ctaArrowText}>→</Text>
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -232,91 +223,63 @@ const styles = StyleSheet.create({
 
   // 헤더
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: 20,
+    paddingBottom: 4,
   },
-  logoText: {
+  logo: {
+    fontSize: 32,
+    letterSpacing: 0.3,
+  },
+  logoNoa: {
     fontFamily: F.display,
-    fontSize: 26,
     color: C.yellow,
-    letterSpacing: 0.5,
+  },
+  logoArchive: {
+    fontFamily: F.display,
+    color: C.text,
+  },
+  headerBottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
   },
   dateText: {
-    fontFamily: F.regular,
-    fontSize: 12,
+    fontFamily: F.medium,
+    fontSize: 16,
     color: C.textMuted,
-    marginTop: 3,
-    letterSpacing: 0.3,
   },
   streakBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: C.card,
-    borderWidth: 1,
-    borderColor: C.yellow,
+    backgroundColor: '#1C2128',
     borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    gap: 3,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    gap: 6,
   },
-  streakFire: {
-    fontSize: 14,
+  streakDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: C.yellow,
   },
-  streakCount: {
+  streakText: {
     fontFamily: F.bold,
-    fontSize: 18,
-    color: C.yellow,
-  },
-  streakUnit: {
-    fontFamily: F.medium,
-    fontSize: 12,
+    fontSize: 13,
     color: C.yellow,
   },
 
-  // 진행률
-  progressSection: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-  progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  progressLabel: {
-    fontFamily: F.bold,
-    fontSize: 15,
-    color: C.text,
-    letterSpacing: 0.3,
-  },
-  progressCount: {
-    fontSize: 13,
-  },
-  progressDone: {
-    fontFamily: F.bold,
-    color: C.yellow,
-    fontSize: 13,
-  },
-  progressMuted: {
-    fontFamily: F.regular,
+  // 섹션 라벨
+  sectionLabel: {
+    fontFamily: F.medium,
+    fontSize: 11,
     color: C.textMuted,
-    fontSize: 13,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: C.border,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: C.yellow,
-    borderRadius: 2,
+    letterSpacing: 1.5,
+    paddingHorizontal: 24,
+    marginTop: 24,
+    marginBottom: 12,
   },
 
   // 스크롤
@@ -324,175 +287,156 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 8,
+    paddingHorizontal: 20,
+    gap: 8,
   },
   scrollPad: {
-    height: 20,
+    height: 16,
   },
 
-  // 루틴 아이템
-  routineItem: {
+  // 루틴 카드
+  card: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 4,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-  },
-  routineItemActive: {
-    backgroundColor: C.card,
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: C.yellow + '40',
+  },
+  cardDone: {
+    backgroundColor: C.card,
+    borderColor: C.border,
+    opacity: 0.6,
+  },
+  cardActive: {
+    backgroundColor: '#1C2030',
+    borderColor: C.yellow,
+  },
+  cardUpcoming: {
+    backgroundColor: C.cardUpcoming,
+    borderColor: C.border,
   },
 
-  // 타임라인
-  timelineCol: {
-    width: 44,
-    alignItems: 'center',
+  cardLeft: {
+    flex: 1,
+    gap: 3,
   },
-  routineTime: {
+  cardTime: {
     fontFamily: F.medium,
-    fontSize: 11,
+    fontSize: 12,
     color: C.textMuted,
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  routineTimeDone: {
-    opacity: 0.4,
+  cardTimeActive: {
+    color: C.yellow,
   },
-  timelineLine: {
-    width: 1,
-    height: 20,
-    backgroundColor: C.border,
-    marginTop: 2,
+  cardTimeDone: {
+    color: C.textMuted,
   },
-  timelineLineDone: {
-    backgroundColor: C.done + '60',
+  cardTitle: {
+    fontFamily: F.bold,
+    fontSize: 18,
+    color: C.text,
+  },
+  cardTitleDone: {
+    textDecorationLine: 'line-through',
+    color: C.textMuted,
+  },
+  cardTitleActive: {
+    color: C.yellow,
+  },
+  cardSubtitle: {
+    fontFamily: F.regular,
+    fontSize: 12,
+    color: C.textMuted,
+    marginTop: 1,
+  },
+  cardSubtitleDone: {
+    textDecorationLine: 'line-through',
   },
 
-  // 상태 아이콘
-  statusCol: {
-    width: 28,
-    alignItems: 'center',
-    paddingTop: 1,
-  },
-  statusDone: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: C.done,
+  cardRight: {
+    marginLeft: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  statusDoneIcon: {
-    color: '#fff',
-    fontSize: 11,
-    fontWeight: '700',
+  iconDone: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: C.textMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  statusActive: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+  iconDoneText: {
+    color: C.textMuted,
+    fontSize: 13,
+  },
+  iconActive: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     borderWidth: 2,
     borderColor: C.yellow,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: C.yellow + '20',
   },
-  statusActiveDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  iconActiveDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: C.yellow,
   },
-  statusUpcoming: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+  iconUpcoming: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: C.upcoming,
-  },
-
-  // 루틴 컨텐츠
-  routineContent: {
-    flex: 1,
-    paddingLeft: 10,
-  },
-  routineHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  routineTitle: {
-    fontFamily: F.medium,
-    fontSize: 15,
-    color: C.textMuted,
-    flex: 1,
-  },
-  routineTitleDone: {
-    textDecorationLine: 'line-through',
-    opacity: 0.5,
-  },
-  routineTitleActive: {
-    fontFamily: F.bold,
-    color: C.text,
-  },
-  routineDuration: {
-    fontFamily: F.regular,
-    fontSize: 12,
-    color: C.textMuted,
-    marginTop: 2,
-    opacity: 0.7,
-  },
-
-  // 상태 뱃지
-  statusBadge: {
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    backgroundColor: C.upcoming,
-  },
-  statusBadgeDone: {
-    backgroundColor: C.done + '25',
-  },
-  statusBadgeActive: {
-    backgroundColor: C.yellow + '25',
-  },
-  statusBadgeText: {
-    fontFamily: F.medium,
-    fontSize: 10,
-    color: C.textMuted,
-  },
-  statusBadgeTextDone: {
-    color: C.done,
-  },
-  statusBadgeTextActive: {
-    color: C.yellow,
+    borderColor: '#30363D',
   },
 
   // CTA 버튼
   ctaSection: {
-    paddingHorizontal: 24,
-    paddingBottom: 16,
+    paddingHorizontal: 20,
+    paddingBottom: 12,
     paddingTop: 8,
   },
   ctaButton: {
     backgroundColor: C.yellow,
-    borderRadius: 16,
-    paddingVertical: 16,
+    borderRadius: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
   },
-  ctaIcon: {
-    fontSize: 18,
-    color: C.bg,
+  ctaLeft: {
+    gap: 2,
+  },
+  ctaLabel: {
+    fontFamily: F.medium,
+    fontSize: 12,
+    color: '#7A6010',
   },
   ctaText: {
     fontFamily: F.bold,
-    fontSize: 17,
+    fontSize: 22,
     color: C.bg,
-    letterSpacing: 0.5,
+  },
+  ctaArrow: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: C.bg + '20',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ctaArrowText: {
+    fontFamily: F.bold,
+    fontSize: 20,
+    color: C.bg,
   },
 
   // 하단 네비게이션
@@ -510,7 +454,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   navIcon: {
-    fontSize: 20,
+    fontSize: 22,
     color: C.textMuted,
   },
   navIconActive: {
