@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,14 @@ const C = {
   done: '#3FB950',
   active: '#F5C842',
   upcoming: '#30363D',
+};
+
+// ─── 폰트 ─────────────────────────────────────────────────────
+const F = {
+  display: 'YesevaOne_400Regular',   // 로고
+  regular: 'DMSans_400Regular',
+  medium: 'DMSans_500Medium',
+  bold: 'DMSans_700Bold',
 };
 
 // ─── 타입 ──────────────────────────────────────────────────────
@@ -165,7 +173,7 @@ export default function HomeScreen() {
       {/* ── 상단 헤더 ─────────────────────────────────────── */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.logoText}>NOA ARCHIVE</Text>
+          <Text style={styles.logoText}>Noa Archive</Text>
           <Text style={styles.dateText}>{getKoreanDate()}</Text>
         </View>
         <View style={styles.streakBadge}>
@@ -232,12 +240,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   logoText: {
-    fontSize: 22,
-    fontWeight: '800',
+    fontFamily: F.display,
+    fontSize: 26,
     color: C.yellow,
-    letterSpacing: 2,
+    letterSpacing: 0.5,
   },
   dateText: {
+    fontFamily: F.regular,
     fontSize: 12,
     color: C.textMuted,
     marginTop: 3,
@@ -258,14 +267,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   streakCount: {
+    fontFamily: F.bold,
     fontSize: 18,
-    fontWeight: '700',
     color: C.yellow,
   },
   streakUnit: {
+    fontFamily: F.medium,
     fontSize: 12,
     color: C.yellow,
-    fontWeight: '500',
   },
 
   // 진행률
@@ -280,8 +289,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   progressLabel: {
+    fontFamily: F.bold,
     fontSize: 15,
-    fontWeight: '700',
     color: C.text,
     letterSpacing: 0.3,
   },
@@ -289,11 +298,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   progressDone: {
+    fontFamily: F.bold,
     color: C.yellow,
-    fontWeight: '700',
     fontSize: 13,
   },
   progressMuted: {
+    fontFamily: F.regular,
     color: C.textMuted,
     fontSize: 13,
   },
@@ -342,9 +352,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   routineTime: {
+    fontFamily: F.medium,
     fontSize: 11,
     color: C.textMuted,
-    fontWeight: '500',
     marginBottom: 4,
   },
   routineTimeDone: {
@@ -413,8 +423,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   routineTitle: {
+    fontFamily: F.medium,
     fontSize: 15,
-    fontWeight: '600',
     color: C.textMuted,
     flex: 1,
   },
@@ -423,10 +433,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   routineTitleActive: {
+    fontFamily: F.bold,
     color: C.text,
-    fontWeight: '700',
   },
   routineDuration: {
+    fontFamily: F.regular,
     fontSize: 12,
     color: C.textMuted,
     marginTop: 2,
@@ -447,8 +458,8 @@ const styles = StyleSheet.create({
     backgroundColor: C.yellow + '25',
   },
   statusBadgeText: {
+    fontFamily: F.medium,
     fontSize: 10,
-    fontWeight: '600',
     color: C.textMuted,
   },
   statusBadgeTextDone: {
@@ -476,11 +487,10 @@ const styles = StyleSheet.create({
   ctaIcon: {
     fontSize: 18,
     color: C.bg,
-    fontWeight: '700',
   },
   ctaText: {
+    fontFamily: F.bold,
     fontSize: 17,
-    fontWeight: '800',
     color: C.bg,
     letterSpacing: 0.5,
   },
@@ -507,13 +517,13 @@ const styles = StyleSheet.create({
     color: C.yellow,
   },
   navLabel: {
+    fontFamily: F.medium,
     fontSize: 10,
     color: C.textMuted,
     marginTop: 3,
-    fontWeight: '500',
   },
   navLabelActive: {
+    fontFamily: F.bold,
     color: C.yellow,
-    fontWeight: '700',
   },
 });
