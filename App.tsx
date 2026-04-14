@@ -9,8 +9,9 @@ import {
 } from '@expo-google-fonts/dm-sans';
 import HomeScreen from './screens/HomeScreen';
 import DoScreen from './screens/DoScreen';
+import SeeScreen from './screens/SeeScreen';
 
-export type Screen = 'home' | 'do';
+export type Screen = 'home' | 'do' | 'see';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
@@ -30,9 +31,7 @@ export default function App() {
     );
   }
 
-  if (screen === 'do') {
-    return <DoScreen onBack={() => setScreen('home')} />;
-  }
-
+  if (screen === 'do') return <DoScreen onBack={() => setScreen('home')} />;
+  if (screen === 'see') return <SeeScreen onBack={() => setScreen('home')} />;
   return <HomeScreen onNavigate={setScreen} />;
 }

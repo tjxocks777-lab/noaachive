@@ -130,7 +130,12 @@ function RoutineCard({ item }: { item: Routine }) {
 }
 
 // ─── 하단 네비게이션 ───────────────────────────────────────────
-function BottomNav({ active }: { active: string }) {
+interface BottomNavProps {
+  active: string;
+  onNavigate: (screen: 'home' | 'do' | 'see') => void;
+}
+
+function BottomNav({ active, onNavigate }: BottomNavProps) {
   const tabs = [
     { key: 'plan', label: 'Plan', icon: '☰' },
     { key: 'do', label: 'Do', icon: '◎' },
@@ -144,7 +149,15 @@ function BottomNav({ active }: { active: string }) {
       {tabs.map((tab) => {
         const isActive = tab.key === active;
         return (
-          <TouchableOpacity key={tab.key} style={styles.navTab} activeOpacity={0.7}>
+          <TouchableOpacity
+            key={tab.key}
+            style={styles.navTab}
+            activeOpacity={0.7}
+            onPress={() => {
+              if (tab.key === 'do') onNavigate('do');
+              else if (tab.key === 'see') onNavigate('see');
+            }}
+          >
             <Text style={[styles.navIcon, isActive && styles.navIconActive]}>{tab.icon}</Text>
             <Text style={[styles.navLabel, isActive && styles.navLabelActive]}>{tab.label}</Text>
           </TouchableOpacity>
@@ -156,7 +169,7 @@ function BottomNav({ active }: { active: string }) {
 
 // ─── 메인 화면 ─────────────────────────────────────────────────
 interface HomeProps {
-  onNavigate: (screen: 'home' | 'do') => void;
+  onNavigate: (screen: 'home' | 'do' | 'see') => void;
 }
 
 export default function HomeScreen({ onNavigate }: HomeProps) {
@@ -210,7 +223,7 @@ export default function HomeScreen({ onNavigate }: HomeProps) {
       </View>
 
       {/* ── 하단 네비게이션 ────────────────────────────────── */}
-      <BottomNav active="home" />
+      <BottomNav active="home" onNavigate={onNavigate} />
     </SafeAreaView>
   );
 }
