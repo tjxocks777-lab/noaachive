@@ -155,7 +155,11 @@ function BottomNav({ active }: { active: string }) {
 }
 
 // ─── 메인 화면 ─────────────────────────────────────────────────
-export default function HomeScreen() {
+interface HomeProps {
+  onNavigate: (screen: 'home' | 'do') => void;
+}
+
+export default function HomeScreen({ onNavigate }: HomeProps) {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
@@ -194,7 +198,7 @@ export default function HomeScreen() {
 
       {/* ── Do 기록하기 버튼 ───────────────────────────────── */}
       <View style={styles.ctaSection}>
-        <TouchableOpacity style={styles.ctaButton} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.ctaButton} activeOpacity={0.85} onPress={() => onNavigate('do')}>
           <View style={styles.ctaLeft}>
             <Text style={styles.ctaLabel}>지금 시간</Text>
             <Text style={styles.ctaText}>Do 기록하기</Text>
